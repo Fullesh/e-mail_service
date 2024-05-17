@@ -48,6 +48,7 @@ class MailingSettings(models.Model):
         ('finished', 'закончена успешно'),
         ('error', 'законечена с ошибками')
     )
+    mailing_name = models.CharField(max_length=50, verbose_name='Название рассылки', default='mailing_name')
     client = models.ManyToManyField(Client, verbose_name='Получатель')
     mail = models.ForeignKey(MailingMessage, on_delete=models.CASCADE)
     period = models.CharField(max_length=12, default='per_month', choices=period_variants,
@@ -55,6 +56,7 @@ class MailingSettings(models.Model):
     status = models.CharField(max_length=15, choices=status_variants, default='created', verbose_name='Статус рассылки')
     start_time = models.DateTimeField(default=timezone.now, verbose_name='Начало рассылки')
     end_time = models.DateTimeField(default=timezone.now, verbose_name='Конец рассылки')
+    next_date = models.DateTimeField(default=timezone.now, verbose_name='Дата следующей рассылки')
     is_active = models.BooleanField(default=False, verbose_name='Активна')
 
     def __str__(self):
@@ -66,7 +68,7 @@ class MailingSettings(models.Model):
 
 
 class Logger(models.Model):
-    mailing = models.ForeignKey(MailingMessage, on_delete=models.CASCADE, verbose_name='Рассылка', **NULLABLE)
+    mailing = models.ForeignKey(MailingSettings, on_delete=models.CASCADE, verbose_name='Рассылка', **NULLABLE)
     last_time_sending = models.DateTimeField(auto_now=True, verbose_name='Время рассылки', **NULLABLE)
     status = models.CharField(default=False, max_length=30, choices=LOG_CHOICES, verbose_name='Попытка', **NULLABLE)
 

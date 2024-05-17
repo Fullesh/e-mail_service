@@ -24,8 +24,8 @@ def my_job():
             print(f'Рассылка {mailing.id} - начало {mailing.start_time}; конец {mailing.end_time}')
 
             result = send_mail(
-                subject=MailingMessage.subject,
-                message=MailingMessage.message,
+                subject=mailing.mail.subject,
+                message=mailing.mail.message,
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=emails_list
             )
@@ -36,20 +36,18 @@ def my_job():
             log = Logger(mailing=mailing, status=status)
             log.save()
 
+            if mailing.period == 'per_day':
+                mailing.next_date = log.last_time_sending + day
+            elif mailing.period == 'per_week':
+                mailing.next_date = log.last_time_sending + week
+            elif mailing.period == 'per_month':
+                mailing.next_date = log.last_time_sending + month
+
             if status:  # на случай сбоя рассылки она останется активной
-                if mailing.next_date < mailing.end_date:
+                if mailing.next_date < mailing.end_time:
                     mailing.status = 'created'
                 else:
                     mailing.status = 'finished'
 
-            if mailing.interval == 'daily':
-                mailing.next_date = log.last_time_sending + day
-            elif mailing.interval == 'weekly':
-                mailing.next_date = log.last_time_sending + week
-            elif mailing.interval == 'monthly':
-                mailing.next_date = log.last_time_sending + month
-            elif mailing.interval == 'once':
-                mailing.next_date = mailing.end_date
-
             mailing.save()
-            print(f'Рассылка {mailing.name} отправлена {today} (должна была {mailing.next_date})')
+            print(f'Рассылка {mailing.client.first_name} отправлена {today} (должна была {mailing.next_date})')

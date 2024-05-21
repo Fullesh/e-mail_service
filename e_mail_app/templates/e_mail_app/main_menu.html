@@ -6,8 +6,14 @@
                 <div class="col-sm-4 offset-md-10 py-4">
                     <ul class="list-unstyled">
                         <li><a href="/" class="text-white">Список рассылок</a></li>
-                        <li><a href="clients/" class="text-white">Список клиентов</a></li>
-                        <li><a href="#" class="text-white">Plug_3</a></li>
+                        <li><a href="/clients/" class="text-white">Список клиентов</a></li>
+                        <li><a href="/settings/" class="text-white">Список рассылок</a></li>
+                        {% if user.is_authenticated %}
+                            <li><a href="{% url 'users:profile' %}" class="text-white">Личный кабинет</a></li>
+                            <li><a href="{% url 'users:logout' %}" class="text-white">Выход</a></li>
+                        {% else %}
+                            <li><a href="{% url 'users:login' %}" class="text-white">Вход</a>/<a href="{% url 'users:register' %}" class="text-white">Регистрация</a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

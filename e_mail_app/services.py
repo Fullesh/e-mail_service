@@ -50,4 +50,4 @@ def my_job():
                     mailing.status = 'finished'
 
             mailing.save()
-            print(f'Рассылка {mailing.client.first_name} отправлена {today} (должна была {mailing.next_date})')
+            print(f'Рассылка {mailing.mailing_name} отправлена {today} (должна была {mailing.next_date})')

@@ -51,7 +51,7 @@ class SettingsAddForm(forms.ModelForm):
         model = MailingSettings
         exclude = ('status',)
 
-    def clean_name(self):
+    def clean_mailing_name(self):
         cleaned_data = self.cleaned_data.get('mailing_name')
 
         if cleaned_data in WORDS_BLACKLIST:

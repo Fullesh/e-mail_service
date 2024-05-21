@@ -9,14 +9,13 @@
             <div class="card-body mx-20">
                 <form method="post" enctype="multipart/form-data"></form>
                 <h5 class="card-title">{{object.mailing_name}}</h5>
-                <p class="card-text">Клиенты: {{object.client}}</p>
+                <p class="card-text">Клиенты: {% for client in object.client.all %} {{client.email}} {% endfor %}</p>
                 <p class="card-text">Периодичность отправки: {{object.period}}</p>
                 <p class="card-text">Активна: {{object.is_active}}</p>
                 <p class="card-text">Письмо: {{object.mail.message}}</p>
                 <div class="col-12">
                     <div style="text-align:center">
-                        <a href="#" class="btn btn-md btn-outline-primary">Использовать</a>
-                        <a href="#" class="btn btn-md btn-outline-primary">Изменить</a>
+                        <a href="/settings/edit/{{object.pk}}" class="btn btn-md btn-outline-primary">Изменить</a>
                     </div>
                 </div>
             </div>

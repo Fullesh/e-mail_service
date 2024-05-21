@@ -37,10 +37,9 @@ class RegisterView(CreateView):
         user.token = token
         send_mail(
             subject='Верификация почты',
-            message=f'Поздравляем с регистрацией на SkyStore \n'
+            message=f'Поздравляем с регистрацией в сервисе ЯРассылки \n'
                     f'Для завершения регистрации перейдите по ссылке: \n'
                     f'http://127.0.0.1:8000/users/confirm/{user.token} \n'
-                    f'На сайте ЯРассылки. \n'
                     f'Если вы не причастны к регистации - игнорируйте это письмо.\n'
                     f'С Уважением, команда ЯРассылки',
             from_email=settings.DEFAULT_FROM_EMAIL,

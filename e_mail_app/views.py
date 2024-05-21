@@ -81,12 +81,12 @@ class MailingDeleteView(DeleteView):
 
 def settings_toggle_active(request, pk):
     mailing_item = get_object_or_404(MailingSettings, pk=pk)
-    if mailing_item.is_active:
+    if mailing_item.is_active is True:
         mailing_item.is_active = False
     else:
         mailing_item.is_active = True
-
-    return redirect(reverse('e_mail_app:home'))
+    mailing_item.save()
+    return redirect(reverse('e_mail_app:settings_home'))
 
 
 class ClientListView(ListView):

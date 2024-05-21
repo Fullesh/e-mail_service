@@ -79,6 +79,16 @@ class MailingDeleteView(DeleteView):
     success_url = reverse_lazy('e_mail_app:home')
 
 
+def settings_toggle_active(request, pk):
+    mailing_item = get_object_or_404(MailingSettings, pk=pk)
+    if mailing_item.is_active:
+        mailing_item.is_active = False
+    else:
+        mailing_item.is_active = True
+
+    return redirect(reverse('e_mail_app:home'))
+
+
 class ClientListView(ListView):
     model = Client
     template_name = 'clients/clients_list.html'
@@ -91,7 +101,7 @@ class ClientDetailView(DetailView):
     context_object_name = 'objects_list'
 
 
-class CleintCreateView(CreateView):
+class ClientCreateView(CreateView):
     model = Client
     template_name = 'clients/clients_form.html'
     form_class = ClientAddForm
@@ -109,3 +119,35 @@ class ClientDeleteView(DeleteView):
     model = Client
     template_name = 'clients/clients_confirm_delete.html'
     success_url = reverse_lazy('e_mail_app:client_home')
+
+
+class SettingsListView(ListView):
+    model = MailingSettings
+    template_name = 'mail_settings/settings_list.html'
+    context_object_name = 'objects_list'
+
+
+class SettingsDetailView(DetailView):
+    model = MailingSettings
+    template_name = 'mail_settings/settings_detail.html'
+    context_object_name = 'objects_list'
+
+
+class SettingsCreateView(CreateView):
+    model = MailingSettings
+    template_name = 'mail_settings/settings_add_form.html'
+    form_class = SettingsAddForm
+    success_url = reverse_lazy('e_mail_app:settings_home')
+
+
+class SettingsUpdateView(UpdateView):
+    model = MailingSettings
+    template_name = 'mail_settings/settings_update_form.html'
+    form_class = SettingsAddForm
+    success_url = reverse_lazy('e_mail_app:settings_home')
+
+
+class SettingsDeleteView(DeleteView):
+    model = MailingSettings
+    template_name = 'mail_settings/settings_confirm_delete.html'
+    success_url = reverse_lazy('e_mail_app:settings_home')

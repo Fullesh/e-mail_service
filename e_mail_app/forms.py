@@ -47,7 +47,14 @@ class ClientAddForm(forms.ModelForm):
 
 
 class SettingsAddForm(forms.ModelForm):
-
     class Meta:
         model = MailingSettings
         exclude = ('status',)
+
+    def clean_name(self):
+        cleaned_data = self.cleaned_data.get('mailing_name')
+
+        if cleaned_data in WORDS_BLACKLIST:
+            raise forms.ValidationError('У-пс, название рассылки в списке запрещённых товаров')
+
+        return cleaned_data

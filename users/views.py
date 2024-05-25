@@ -2,9 +2,11 @@ import random
 
 from django.conf import settings
 from django.core.mail import send_mail
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
-from django.views.generic import UpdateView, CreateView
+from django.views.generic import UpdateView, CreateView, ListView, DetailView
 
 from users.forms import UserProfileForm, UserRegisterForm
 from users.models import User
@@ -72,3 +74,28 @@ def res_password(request):
         user.save()
         return redirect(reverse('users:login'))
     return render(request, 'users/reset_password.html')
+
+
+class UsersView(ListView):
+    model = User
+    template_name = 'manager/users_list.html'
+    context_object_name = 'objects_list'
+
+
+class UsersDetail(DetailView):
+    model = User
+    template_name = 'manager/users_detail.html'
+    context_object_name = 'objects_list'
+
+
+def block_user(request, pk):
+    user_item = get_object_or_404(User, pk=pk)
+    if request.user.is_staff and user_item.is_superuser:
+        rendered = render_to_string('manager/403_forbidden.html')
+        return HttpResponse(rendered, status=403)
+    if user_item.is_blocked:
+        user_item.is_blocked = False
+    else:
+        user_item.is_blocked = True
+    user_item.save()
+    return redirect(reverse('users:manager_users'))

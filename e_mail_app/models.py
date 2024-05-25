@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
@@ -27,6 +28,8 @@ class Client(models.Model):
 class MailingMessage(models.Model):
     subject = models.CharField(max_length=100, verbose_name='Тема письма')
     message = models.TextField(verbose_name='Текст письма')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+                              verbose_name='Владелец письма', **NULLABLE)
 
     def __str__(self):
         return f'{self.subject}; {self.message}'
@@ -58,6 +61,8 @@ class MailingSettings(models.Model):
     end_time = models.DateTimeField(default=timezone.now, verbose_name='Конец рассылки')
     next_date = models.DateTimeField(default=timezone.now, verbose_name='Дата следующей рассылки')
     is_active = models.BooleanField(default=False, verbose_name='Активна')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+                              verbose_name='Владелец рассылки', **NULLABLE)
 
     def __str__(self):
         return f'{self.client}: ({self.start_time} - {self.end_time}; {self.status})'

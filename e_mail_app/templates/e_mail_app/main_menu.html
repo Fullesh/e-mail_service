@@ -1,15 +1,23 @@
 {% block content %}
+{% if user.is_blocked %}
+<div>
+
+</div>
+{% else %}
 <header data-bs-theme="dark">
     <div class="collapse text-bg-dark" id="navbarHeader">
         <div class="container">
             <div class="row">
                 <div class="col-sm-4 offset-md-10 py-4">
                     <ul class="list-unstyled">
-                        <li><a href="/" class="text-white">Список рассылок</a></li>
-                        <li><a href="/clients/" class="text-white">Список клиентов</a></li>
-                        <li><a href="/settings/" class="text-white">Список рассылок</a></li>
+                        <li><a href="{% url 'e_mail_app:home' %}" class="text-white">Список рассылок</a></li>
+                        <li><a href="{% url 'e_mail_app:client_home' %}" class="text-white">Список клиентов</a></li>
+                        <li><a href="{% url 'e_mail_app:settings_home' %}" class="text-white">Список рассылок</a></li>
                         {% if user.is_authenticated %}
                             <li><a href="{% url 'users:profile' %}" class="text-white">Личный кабинет</a></li>
+                        {% if user.is_staff %}
+                            <li><a href="{% url 'users:manager_users' %}" class="text-white">Кабинет менеджера</a></li>
+                        {% endif %}
                             <li><a href="{% url 'users:logout' %}" class="text-white">Выход</a></li>
                         {% else %}
                             <li><a href="{% url 'users:login' %}" class="text-white">Вход</a>/<a href="{% url 'users:register' %}" class="text-white">Регистрация</a></li>
@@ -31,5 +39,5 @@
         </div>
     </div>
 </header>
-
+{% endif %}
 {% endblock %}

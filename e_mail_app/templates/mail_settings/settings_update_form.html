@@ -2,6 +2,14 @@
 {% load static %}
 
 {% block content %}
+{% if user.is_blocked %}
+<div class="col-12 text-center">
+    <h1>
+        Уважаемый пользователь, Ваш аккаунт заблокирован!
+    </h1>
+    <a class="p-2 btn btn-outline-primary" href="{% url 'users:logout' %}">Выйти</a>
+</div>
+{% else %}
 
 <div class="container">
     <form method="post" action="" enctype="multipart/form-data" class="form-floating mx-auto">
@@ -23,5 +31,6 @@
         </div>
     </form>
 </div>
+{% endif %}
 
 {% endblock %}

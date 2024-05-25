@@ -2,7 +2,14 @@
 {% load static %}
 
 {% block content %}
-
+{% if user.is_blocked %}
+<div class="col-12 text-center">
+    <h1>
+        Уважаемый пользователь, Ваш аккаунт заблокирован!
+    </h1>
+    <a class="p-2 btn btn-outline-primary" href="{% url 'users:logout' %}">Выйти</a>
+</div>
+{% else %}
 <div class="row">
     <div class="col-2 mx-auto">
         <div class="card mx-auto" style="width: 18rem;">
@@ -15,12 +22,12 @@
                 <p class="card-text">Письмо: {{object.mail.message}}</p>
                 <div class="col-12">
                     <div style="text-align:center">
-                        <a href="/settings/edit/{{object.pk}}" class="btn btn-md btn-outline-primary">Изменить</a>
+                        <a href="{% url 'e_mail_app:edit_settings' object.pk %}" class="btn btn-md btn-outline-primary">Изменить</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
+{% endif %}
 {% endblock %}

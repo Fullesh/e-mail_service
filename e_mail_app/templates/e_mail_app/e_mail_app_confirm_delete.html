@@ -1,6 +1,15 @@
 {% extends 'e_mail_app/base.html' %}
 
 {% block content %}
+{% if user.is_blocked %}
+<div class="col-12 text-center">
+    <h1>
+        Уважаемый пользователь, Ваш аккаунт заблокирован!
+    </h1>
+    <a class="p-2 btn btn-outline-primary" href="{% url 'users:logout' %}">Выйти</a>
+</div>
+{% else %}
+
 <div class="col-12">
   <div class="row">
     <div class="col-6">
@@ -17,4 +26,5 @@
     </div>
   </div>
 </div>
+{% endif %}
 {% endblock %}

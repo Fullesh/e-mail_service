@@ -2,6 +2,14 @@
 {% load static %}
 
 {% block content %}
+{% if user.is_blocked %}
+<div class="col-12 text-center">
+    <h1>
+        Уважаемый пользователь, Ваш аккаунт заблокирован!
+    </h1>
+    <a class="p-2 btn btn-outline-primary" href="{% url 'users:logout' %}">Выйти</a>
+</div>
+{% else %}
 
 <main>
     <section class="py-5 text-center container">
@@ -10,7 +18,11 @@
                 <h1 class="fw-light">ЯРассылки</h1>
                 <p class="lead text-body-secondary">Удобный сервис создания и отправки рассылок. Попробуй сейчас</p>
                 <p>
-                    <a href="/settings/new/" class="btn btn-primary my-2">Создать настройки рассылки</a>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'e_mail_app:create_settings' %}" class="btn btn-primary my-2">Создать настройки рассылки</a>
+                    {% else %}
+                    <a href="{% url 'users:login' %}" class="btn btn-primary my-2">Создать настройки рассылки</a>
+                    {% endif %}
                 </p>
             </div>
         </div>
@@ -29,13 +41,15 @@
                             <p class="card-text">{{object.mail.message|slice:100}}...</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <a href="/settings/view/{{object.pk}}" class="btn btn-sm btn-outline-secondary">Просмотр</a>
-                                    <a href="/settings/edit/{{object.pk}}" class="btn btn-sm btn-outline-secondary">Изменить</a>
-                                    <a href="/settings/delete/{{object.pk}}" class="btn btn-sm btn-outline-danger">Удалить</a>
+                                    <a href="{% url 'e_mail_app:detail_settings' object.pk %}" class="btn btn-sm btn-outline-secondary">Просмотр</a>
+                                    {% if user.is_authenticated %}
+                                    <a href="{% url 'e_mail_app:edit_settings' object.pk %}" class="btn btn-sm btn-outline-secondary">Изменить</a>
+                                    <a href="{% url 'e_mail_app:delete_settings' object.pk %}" class="btn btn-sm btn-outline-danger">Удалить</a>
                                     {% if object.is_active %}
-                                    <a href="/settings/active/{{object.pk}}" class="btn btn-sm btn-outline-danger">Отключить</a>
+                                    <a href="{% url 'e_mail_app:activate_settings' object.pk %}" class="btn btn-sm btn-outline-danger">Отключить</a>
                                     {% else %}
-                                    <a href="/settings/active/{{object.pk}}" class="btn btn-sm btn-outline-success">Активировать</a>
+                                    <a href="{% url 'e_mail_app:activate_settings' object.pk %}" class="btn btn-sm btn-outline-success">Активировать</a>
+                                    {% endif %}
                                     {% endif %}
                                 </div>
                             </div>
@@ -49,5 +63,5 @@
     </div>
 
 </main>
-
+{% endif %}
 {% endblock %}

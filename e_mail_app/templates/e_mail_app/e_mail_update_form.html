@@ -1,28 +1,14 @@
 {% extends 'e_mail_app/base.html' %}
 
-
-<!--<div class="container">-->
-<!--    <form method="post" action="" enctype="multipart/form-data" class="form-floating">-->
-<!--        <div class="row text-start">-->
-<!--            <div class="col-lg-4 col-md-6 col-sm-12 mx-auto">-->
-<!--                <div class="card mb-4 box-shadow mx-auto">-->
-<!--                    <div class="card-header text-center">-->
-<!--                        <h4 class="my-0 font-weight-normal">Редактирование рассылки</h4>-->
-<!--                    </div>-->
-<!--                    <div class="card-body text-center">-->
-<!--                        {% csrf_token %}-->
-<!--                        {{ form.as_p }}-->
-<!--                        <button type="submit" class="btn btn-block btn-outline-primary">Сохранить</button>-->
-<!--                        <a href="/" class="btn btn-block btn-outline-danger">Отмена</a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </form>-->
-<!--</div>-->
-
-
 {% block content %}
+{% if user.is_blocked %}
+<div class="col-12 text-center">
+    <h1>
+        Уважаемый пользователь, Ваш аккаунт заблокирован!
+    </h1>
+    <a class="p-2 btn btn-outline-primary" href="{% url 'users:logout' %}">Выйти</a>
+</div>
+{% else %}
 <div class="container">
     <form method="post" action="" enctype="multipart/form-data" class="form-floating mx-auto">
         <div class="row ">
@@ -60,4 +46,5 @@
         </div>
     </form>
 </div>
+{% endif %}
 {% endblock %}

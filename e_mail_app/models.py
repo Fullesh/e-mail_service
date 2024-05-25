@@ -65,6 +65,12 @@ class MailingSettings(models.Model):
     class Meta:
         verbose_name = 'Настройка'
         verbose_name_plural = 'Настройки'
+        permissions = [
+            (
+                'toggle_active',
+                'выключить рассылку'
+            ),
+        ]
 
 
 class Logger(models.Model):

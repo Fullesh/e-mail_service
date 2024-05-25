@@ -8,10 +8,6 @@ from e_mail_app.models import NULLABLE
 
 
 class User(AbstractUser):
-    role_variants = (
-        ('manager', 'Менеджер'),
-        ('admin', 'Администратор')
-    )
     username = None
     email = models.EmailField(unique=True, verbose_name='E-mail')
 
@@ -20,8 +16,20 @@ class User(AbstractUser):
     country = models.CharField(max_length=25, verbose_name='Страна', **NULLABLE)
     is_verified = models.BooleanField(default=False, verbose_name='Подтверждён')
     token = models.CharField(max_length=10, verbose_name='Токен', **NULLABLE)
-    role = models.CharField(max_length=20, default='manager', choices=role_variants,
-                            verbose_name='Роль пользователя')
+    is_blocked = models.BooleanField(default=False, verbose_name='Заблокирован')
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
+
+    def __str__(self):
+        return f'{self.email}: {self.country}, {self.is_verified}, {self.is_blocked}'
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+        permissions = [
+            (
+                'can_block',
+                'заблокировать'
+            )
+        ]

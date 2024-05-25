@@ -32,12 +32,14 @@ class MailingCreateView(CreateView):
 
     def form_valid(self, form):
         formset = self.get_context_data()['formset']
+        mailing_template = form.save()
         self.object = form.save()
         self.object.owner = self.request.user
+        mailing_template.owner = self.object.owner
         if formset.is_valid():
             formset.instance = self.object
             formset.save()
-
+            mailing_template.save()
         return super().form_valid(form)
 
 
@@ -64,12 +66,14 @@ class MailingUpdateView(UpdateView):
 
     def form_valid(self, form):
         formset = self.get_context_data()['formset']
+        mailing_template = form.save()
         self.object = form.save()
         self.object.owner = self.request.user
+        mailing_template.owner = self.object.owner
         if formset.is_valid():
             formset.instance = self.object
             formset.save()
-
+            mailing_template.save()
         return super().form_valid(form)
 
 
@@ -139,12 +143,26 @@ class SettingsCreateView(CreateView):
     form_class = SettingsAddForm
     success_url = reverse_lazy('e_mail_app:settings_home')
 
+    def form_valid(self, form):
+        mailing_settings = form.save()
+        user = self.request.user
+        mailing_settings.owner = user
+        mailing_settings.save()
+        return super().form_valid(form)
+
 
 class SettingsUpdateView(UpdateView):
     model = MailingSettings
     template_name = 'mail_settings/settings_update_form.html'
     form_class = SettingsAddForm
     success_url = reverse_lazy('e_mail_app:settings_home')
+
+    def form_valid(self, form):
+        mailing_settings = form.save()
+        user = self.request.user
+        mailing_settings.owner = user
+        mailing_settings.save()
+        return super().form_valid(form)
 
 
 class SettingsDeleteView(DeleteView):

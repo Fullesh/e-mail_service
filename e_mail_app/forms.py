@@ -10,7 +10,7 @@ class MailingAddForm(forms.ModelForm):
 
     class Meta:
         model = MailingMessage
-        fields = '__all__'
+        exclude = ('owner', )
 
     def clean_subject(self):
         cleaned_data = self.cleaned_data.get('subject')
@@ -49,7 +49,7 @@ class ClientAddForm(forms.ModelForm):
 class SettingsAddForm(forms.ModelForm):
     class Meta:
         model = MailingSettings
-        exclude = ('status',)
+        exclude = ('status', 'owner')
 
     def clean_mailing_name(self):
         cleaned_data = self.cleaned_data.get('mailing_name')

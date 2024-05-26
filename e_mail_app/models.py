@@ -16,6 +16,8 @@ class Client(models.Model):
     last_name = models.CharField(max_length=10, verbose_name='Фамилия')
     patronymic = models.CharField(max_length=20, verbose_name='Отчество', **NULLABLE)
     description = models.TextField(verbose_name='Описание', **NULLABLE)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+                              verbose_name='Владелец клиента', **NULLABLE)
 
     def __str__(self):
         return f'{self.email}: ({self.first_name}, {self.last_name}, {self.description})'

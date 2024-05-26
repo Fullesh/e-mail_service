@@ -58,3 +58,17 @@ class SettingsAddForm(forms.ModelForm):
             raise forms.ValidationError('У-пс, название рассылки в списке запрещённых товаров')
 
         return cleaned_data
+
+
+class SettingsManagerForm(forms.ModelForm):
+    class Meta:
+        model = MailingSettings
+        exclude = ('status', 'owner', 'client')
+
+    def clean_mailing_name(self):
+        cleaned_data = self.cleaned_data.get('mailing_name')
+
+        if cleaned_data in WORDS_BLACKLIST:
+            raise forms.ValidationError('У-пс, название рассылки в списке запрещённых товаров')
+
+        return cleaned_data

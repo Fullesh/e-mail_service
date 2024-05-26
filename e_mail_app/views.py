@@ -1,9 +1,10 @@
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.forms import inlineformset_factory
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
-from e_mail_app.forms import MailingAddForm, ClientAddForm, SettingsAddForm
+from e_mail_app.forms import MailingAddForm, ClientAddForm, SettingsAddForm, SettingsManagerForm
 from e_mail_app.models import MailingMessage, Client, MailingSettings
 
 
@@ -54,6 +55,8 @@ class MailingUpdateView(UpdateView):
     template_name = 'e_mail_app/e_mail_update_form.html'
     form_class = MailingAddForm
     success_url = reverse_lazy('e_mail_app:home')
+    perms = ('e_mail_app.view_mailingmessage', 'e_mail_app.view_mailingsettings', 'e_mail_app.toggle_active',
+             'users.can_block', 'users.view_user')
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -75,6 +78,16 @@ class MailingUpdateView(UpdateView):
             formset.save()
             mailing_template.save()
         return super().form_valid(form)
+
+    def get_form_class(self):
+        if self.request.user.is_staff or self.request.user.has_perms(perm_list=self.perms) \
+                and not self.request.user.is_superuser:
+            return SettingsManagerForm
+        else:
+            if self.request.user != self.get_object().owner:
+                raise PermissionDenied
+            else:
+                return SettingsAddForm
 
 
 class MailingDeleteView(DeleteView):
@@ -111,12 +124,26 @@ class ClientCreateView(CreateView):
     form_class = ClientAddForm
     success_url = reverse_lazy('e_mail_app:client_home')
 
+    def form_valid(self, form):
+        client = form.save()
+        user = self.request.user
+        client.owner = user
+        client.save()
+        return super().form_valid(form)
+
 
 class ClientUpdateView(UpdateView):
     model = Client
     template_name = 'clients/clients_update_form.html'
     form_class = ClientAddForm
     success_url = reverse_lazy('e_mail_app:client_home')
+
+    def form_valid(self, form):
+        client = form.save()
+        user = self.request.user
+        client.owner = user
+        client.save()
+        return super().form_valid(form)
 
 
 class ClientDeleteView(DeleteView):

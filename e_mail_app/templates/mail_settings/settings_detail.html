@@ -22,7 +22,9 @@
                 <p class="card-text">Письмо: {{object.mail.message}}</p>
                 <div class="col-12">
                     <div style="text-align:center">
+                        {% if user == object.owner or user.is_superuser or perms.e_mail_app.edit_mailingsettings %}
                         <a href="{% url 'e_mail_app:edit_settings' object.pk %}" class="btn btn-md btn-outline-primary">Изменить</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

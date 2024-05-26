@@ -10,12 +10,12 @@
             <div class="row">
                 <div class="col-sm-4 offset-md-10 py-4">
                     <ul class="list-unstyled">
-                        <li><a href="{% url 'e_mail_app:home' %}" class="text-white">Список рассылок</a></li>
+                        <li><a href="{% url 'e_mail_app:home' %}" class="text-white">Список шаблонов</a></li>
                         <li><a href="{% url 'e_mail_app:client_home' %}" class="text-white">Список клиентов</a></li>
                         <li><a href="{% url 'e_mail_app:settings_home' %}" class="text-white">Список рассылок</a></li>
                         {% if user.is_authenticated %}
                             <li><a href="{% url 'users:profile' %}" class="text-white">Личный кабинет</a></li>
-                        {% if user.is_staff %}
+                        {% if perms.e_mail_app.toggle_active %}
                             <li><a href="{% url 'users:manager_users' %}" class="text-white">Кабинет менеджера</a></li>
                         {% endif %}
                             <li><a href="{% url 'users:logout' %}" class="text-white">Выход</a></li>

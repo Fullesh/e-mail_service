@@ -1,5 +1,9 @@
 import pytz
 from datetime import timedelta, datetime
+
+from django.core.cache import cache
+
+from blog.models import Blog
 from config import settings
 from django.core.mail import send_mail
 
@@ -51,3 +55,54 @@ def my_job():
 
             mailing.save()
             print(f'Рассылка {mailing.mailing_name} отправлена {today} (должна была {mailing.next_date})')
+
+
+def get_cache_mailing_active():
+    if settings.CACHE_ENABLED:
+        key = 'mailing_quantity_active'
+        mailing_quantity_active = cache.get(key)
+        if mailing_quantity_active is None:
+            mailing_quantity_active = MailingSettings.objects.filter(is_active=True).count()
+            cache.set(key, mailing_quantity_active)
+    else:
+        mailing_quantity_active = MailingSettings.objects.filter(is_active=True).count()
+    return mailing_quantity_active
+
+
+def get_mailing_count_from_cache():
+    if settings.CACHE_ENABLED:
+        key = 'mailing_quantity'
+        mailing_quantity = cache.get(key)
+        if mailing_quantity is None:
+            mailing_quantity = MailingSettings.objects.all().count()
+            cache.set(key, mailing_quantity)
+    else:
+         mailing_quantity = MailingSettings.objects.all().count()
+
+    return mailing_quantity
+
+
+def get_cache_unique_quantity():
+    if settings.CACHE_ENABLED:
+        key = 'clients_unique_quantity'
+        clients_unique_quantity = cache.get(key)
+        if clients_unique_quantity is None:
+            clients_unique_quantity = len(list(set(Client.objects.all())))
+            cache.set(key, clients_unique_quantity)
+    else:
+        clients_unique_quantity = len(list(set(Client.objects.all())))
+
+    return clients_unique_quantity
+
+
+def get_cache_random_records():
+    if settings.CACHE_ENABLED:
+        key = 'records'
+        records = cache.get(key)
+        if records is None:
+            records = Blog.objects.order_by('?')[:3]
+            cache.set(key, records)
+    else:
+        records = Blog.objects.order_by('?')[:3]
+
+    return records

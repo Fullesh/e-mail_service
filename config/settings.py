@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8n85@3y9f4xw5s-ybwcyyh2w-1+)nu7!%8m_2nxbe)%(&(!mwo'
+SECRET_KEY = os.getenv('DJANGO_S_K')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -81,10 +81,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'email_sender',
-        'USER': 'postgres',
-        'PASSWORD': 1,
-        'HOST': 'localhost',
+        'NAME': os.getenv('DATABASE_NAME'),
+        'USER': os.getenv('DATABASE_USER'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+        'HOST': os.getenv('DATABASE_HOST'),
         'PORT': '5432'
     }
 }
@@ -142,12 +142,12 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.backend.EmailBackend'
-EMAIL_HOST = 'smtp.yandex.ru'
-EMAIL_PORT = 465
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
 
-EMAIL_HOST_USER = 'danilabelov.adm@yandex.ru'
-EMAIL_HOST_PASSWORD = 'wavnettgbcgfrgxj'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 
@@ -157,3 +157,13 @@ EMAIL_ADMIN = EMAIL_HOST_USER
 
 
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+
+CACHE_ENABLED = os.getenv('CACHE_ENABLED') == 'True'
+
+if CACHE_ENABLED:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": os.getenv('CACHES_LOCATION'),
+        }
+    }

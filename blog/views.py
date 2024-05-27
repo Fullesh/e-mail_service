@@ -5,6 +5,8 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, D
 from blog.forms import RecordAddForm
 from blog.models import Blog
 from e_mail_app.models import MailingSettings, Client
+from e_mail_app.services import get_cache_mailing_active, get_mailing_count_from_cache, get_cache_unique_quantity, \
+    get_cache_random_records
 
 
 # Create your views here.
@@ -15,10 +17,10 @@ class BlogView(ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['mailing_quantity_active'] = len(MailingSettings.objects.all().filter(is_active=True))
-        context['mailing_quantity'] = len(MailingSettings.objects.all())
-        context['clients_unique_quantity'] = len(list(set(Client.objects.all())))
-        context['records'] = Blog.objects.order_by('?')[:3]
+        context['mailing_quantity_active'] = get_cache_mailing_active()
+        context['mailing_quantity'] = get_mailing_count_from_cache()
+        context['clients_unique_quantity'] = get_cache_unique_quantity()
+        context['records'] = get_cache_random_records()
 
         return context
 

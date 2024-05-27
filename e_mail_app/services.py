@@ -94,15 +94,3 @@ def get_cache_unique_quantity():
 
     return clients_unique_quantity
 
-
-def get_cache_random_records():
-    if settings.CACHE_ENABLED:
-        key = 'records'
-        records = cache.get(key)
-        if records is None:
-            records = Blog.objects.order_by('?')[:3]
-            cache.set(key, records)
-    else:
-        records = Blog.objects.order_by('?')[:3]
-
-    return records

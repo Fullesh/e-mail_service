@@ -19,6 +19,7 @@
   "fields": {
     "name": "manager",
     "permissions": [
+      24,
       36,
       53,
       28,
